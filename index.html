@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Isaiah Art Curation V6</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <img src="./src/isaiah-logo.png" alt="Isaiah Logo" id="isaiah-logo" />
+      <!-- <h1>AI Art Curator</h1> -->
+
+      <!-- Input Section -->
+      <div class="input-section">
+        <label
+          for="theme-input"
+          class="typewrite"
+          data-period="1000"
+          data-type='["What’s the theme of your personalized exhibition?"]'
+        ></label>
+        <div id="input-chat-container">
+          <input type="text" id="theme-input" placeholder="Ask Isaiah" />
+          <button class="submit-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 3L20 11L12 19M4 11H20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                transform="rotate(-90 12 12)"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Interface Section-->
+      <div id="chat-interface"></div>
+
+      <!-- Exhibition Section -->
+      <div id="exhibition-section" style="display: none; margin-top: 50px">
+        <h1 id="exhibition-title" style="text-transform: uppercase"></h1>
+        <div id="curator-explanation"></div>
+        <h2>Curated Artworks</h2>
+        <div id="artworks-display"></div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="openai.js"></script>
+    <script type="module" src="script.js"></script>
+    <script src="ui.js"></script>
+    <script type="module">
+      import {pipeline} from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js";
+
+      let extractor;
+      (async () => {
+        extractor = await pipeline("feature-extraction", "Xenova/bge-small-en-v1.5");
+      })();
+    </script>
+  </body>
+</html>
