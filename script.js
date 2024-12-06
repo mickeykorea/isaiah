@@ -1104,18 +1104,21 @@ document.getElementById('theme-input').addEventListener('keypress', (event) => {
 });
 
 async function handleSubmit() {
-    const themeInput = document.getElementById('theme-input').value;
+    const themeInput = document.getElementById('theme-input');  // Get the element
+    const theme = themeInput.value;  // Get its value
+
     if (!artpediaData || Object.keys(artpediaData).length === 0) {
         console.error('Art data not loaded yet');
         alert('Please wait for the art data to finish loading.');
         return;
     }
 
-    if (themeInput) {
+    if (theme) {
+        themeInput.value = '';  // Now this works because themeInput is the element
         document.getElementById('chat-interface').style.display = 'block';
         document.querySelector('.input-section').classList.add('chat-started');
-        console.log('Starting conversation with theme:', themeInput);
-        await initiateConversation(themeInput);
+        console.log('Starting conversation with theme:', theme);
+        await initiateConversation(theme);
     } else {
         alert('Please enter a theme for the exhibition.');
     }

@@ -43,6 +43,13 @@ h2 {
     text-align: center;
 }
 
+h3 {
+    color: #ECECF1;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
 /* Input section styles */
 .input-section {
     margin-top: 20vh;
