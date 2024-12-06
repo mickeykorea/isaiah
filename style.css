@@ -524,6 +524,16 @@ h3 {
     clear: both;
 }
 
+.help-content a {
+    color: #6281BB;
+    text-decoration: none;
+    font-style: italic;
+}
+
+.help-content a:hover {
+    text-decoration: underline;
+}
+
 /* Media query for mobile devices */
 @media (max-width: 490px) {
     .help-button {
