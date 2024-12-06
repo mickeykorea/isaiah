@@ -396,6 +396,11 @@ async function initiateConversation(userInput) {
     }
 }
 
+// Helper function to wait
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Display follow-up questions and get user preferences
 async function displayFollowUpQuestions(response) {
     const chatDiv = document.getElementById('chat-interface');
@@ -407,12 +412,14 @@ async function displayFollowUpQuestions(response) {
     // Clear previous conversation before showing new content
     //chatDiv.innerHTML = '';
 
-    // Display initial interpretation and insight
+    // Display initial interpretation and insight with delays
     if (response.interpretation) {
         appendMessage(chatDiv, response.interpretation, 'ai');
+        await delay(1800);
     }
     if (response.insight) {
         appendMessage(chatDiv, response.insight, 'ai');
+        await delay(1800);
     }
 
     // Handle initial follow-up question
@@ -448,9 +455,11 @@ async function displayFollowUpQuestions(response) {
 
         if (followUpResponse.interpretation) {
             appendMessage(chatDiv, followUpResponse.interpretation, 'ai');
+            await delay(1800);
         }
         if (followUpResponse.insight) {
             appendMessage(chatDiv, followUpResponse.insight, 'ai');
+            await delay(1800);
         }
 
         if (followUpResponse.status === 'COMPLETE' || questionCount >= 4) {
@@ -460,6 +469,7 @@ async function displayFollowUpQuestions(response) {
             const question = followUpResponse.questions[0];
             questionCount++;
             appendMessage(chatDiv, question, 'ai');
+            await delay(800);
             const answer = await getUserInput();
             appendMessage(chatDiv, `User: ${answer}`, 'user');
             previousQuestions.push(question);
@@ -509,7 +519,9 @@ function getUserInput() {
         chatDiv.appendChild(inputContainer);
 
         // Scroll to the input field
-        chatDiv.scrollTop = chatDiv.scrollHeight;
+        // chatDiv.scrollTop = chatDiv.scrollHeight;
+        inputContainer.offsetHeight;
+        inputContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
         input.focus();
 
         const handleSubmit = () => {
@@ -1092,7 +1104,11 @@ function appendMessage(chatDiv, message, sender) {
     messageDiv.appendChild(messageContent);
 
     chatDiv.appendChild(messageDiv);
-    chatDiv.scrollTop = chatDiv.scrollHeight;
+    //chatDiv.scrollTop = chatDiv.scrollHeight;
+    messageDiv.offsetHeight;
+
+    // Smooth scroll to the new message
+    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
 }
 
 // Event listener for the submit button
@@ -1127,4 +1143,24 @@ async function handleSubmit() {
 window.addEventListener('DOMContentLoaded', async () => {
     await loadMuseumData();
     //console.log('Initial data loading complete');
+
+    const helpButton = document.querySelector('.help-button');
+    const helpPopup = document.querySelector('.help-popup');
+    const questionIcon = helpButton.querySelector('svg:first-child');
+    const xIcon = helpButton.querySelector('svg:last-child');
+
+    helpButton.addEventListener('click', () => {
+        helpPopup.classList.toggle('show');
+        questionIcon.style.display = questionIcon.style.display === 'none' ? 'block' : 'none';
+        xIcon.style.display = xIcon.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Close popup when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!helpPopup.contains(e.target) && !helpButton.contains(e.target)) {
+            helpPopup.classList.remove('show');
+            questionIcon.style.display = 'block';
+            xIcon.style.display = 'none';
+        }
+    });
 });
