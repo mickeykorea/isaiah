@@ -1143,7 +1143,9 @@ async function handleSubmit() {
 window.addEventListener('DOMContentLoaded', async () => {
     await loadMuseumData();
     //console.log('Initial data loading complete');
+});
 
+document.addEventListener('DOMContentLoaded', () => {
     const helpButton = document.querySelector('.help-button');
     const helpPopup = document.querySelector('.help-popup');
     const questionIcon = helpButton.querySelector('svg:first-child');
