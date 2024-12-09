@@ -521,7 +521,7 @@ function getUserInput() {
         // Scroll to the input field
         // chatDiv.scrollTop = chatDiv.scrollHeight;
         inputContainer.offsetHeight;
-        inputContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        inputContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         input.focus();
 
         const handleSubmit = () => {
@@ -1102,13 +1102,12 @@ function appendMessage(chatDiv, message, sender) {
     // Assemble message
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(messageContent);
-
     chatDiv.appendChild(messageDiv);
     //chatDiv.scrollTop = chatDiv.scrollHeight;
     messageDiv.offsetHeight;
 
     // Smooth scroll to the new message
-    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // Event listener for the submit button

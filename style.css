@@ -113,21 +113,25 @@ h3 {
     max-height: 500px;
     overflow-y: auto;
     padding: 20px;
+    /* padding-bottom: 50px; */
     border-radius: 8px;
     background-color: #2f2f2f;
     display: none;
     border-radius: 20px;
     position: relative;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 /* Custom scrollbar styling */
 #chat-interface::-webkit-scrollbar {
-    width: 8px;
-    border-radius: 20px;
+    /* width: 8px;
+    border-radius: 20px; */
+    display: none;
 }
 
-#chat-interface::-webkit-scrollbar-track {
+/* #chat-interface::-webkit-scrollbar-track {
     background: #343541;
     border-radius: 20px;
 }
@@ -139,7 +143,7 @@ h3 {
 
 #chat-interface::-webkit-scrollbar-thumb:hover {
     background: #676980;
-}
+} */
 
 @keyframes slideIn {
     from {
@@ -234,7 +238,7 @@ h3 {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 20px;
     padding: 10px;
     background-color: #444654;
     border-radius: 8px;
@@ -298,6 +302,11 @@ h3 {
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 50px;
+    width: calc(100% - 40px);
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: justify;
+    line-height: 2.1rem;
 }
 
 /* Exhibition section styles */
@@ -312,9 +321,9 @@ h3 {
 .artwork {
     display: none;
     background-color: #343541;
-    padding: 30px;
+    padding: 20px;
     border-radius: 8px;
-    width: 100%;
+    width: calc(100% - 40px);
     max-width: 800px;
     margin: 0 auto;
     animation: fadeEffect 0.5s;
@@ -420,16 +429,16 @@ h3 {
 .wall-text {
     font-style: italic;
     color: #D1D1D6;
-    margin-top: 15px;
-    margin-bottom: 25px;
-    text-align: left;
+    margin: 25px auto;
+    text-align: justify;
+    line-height: 2.1rem;
 }
 
 .curator-notes {
     background-color: #40414F;
-    padding: 15px;
+    padding: 20px;
     border-radius: 4px;
-    margin-top: 15px;
+    margin-top: 25px;
     text-align: center;
 }
 
@@ -439,7 +448,8 @@ h3 {
 }
 
 .artwork .curator-notes p {
-    text-align: left;
+    text-align: justify;
+    line-height: 2.1rem;
 }
 
 /* Scrollbar styles */
