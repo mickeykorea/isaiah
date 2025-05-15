@@ -392,6 +392,7 @@ async function initiateConversation(userInput) {
         await curateExhibition({ ...refinedCriteria, initialInput: userInput });
     } catch (error) {
         console.error('Error in conversation:', error);
+        handleAPIError(error);
         appendMessage(chatDiv, "I'm sorry, but I encountered an error while processing your request.", 'ai');
     }
 }
@@ -1178,3 +1179,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// error handling for API no remaining tokens
+function showAlert(message) {
+    // Create alert element
+    const alertDiv = document.createElement('div');
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 15px 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 1000;
+        text-align: center;
+        font-size: 16px;
+        animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
+    `;
+    alertDiv.textContent = message;
+
+    // Add styles for animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translate(-50%, 0); }
+            to { opacity: 0; transform: translate(-50%, -20px); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Add to document
+    document.body.appendChild(alertDiv);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+        alertDiv.remove();
+        style.remove();
+    }, 5000);
+}
+
+function handleAPIError(error) {
+    console.error('API Error:', error);
+    if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
+        showAlert('The AI service is currently under construction. Please try again later.');
+    } else {
+        showAlert('An unexpected error occurred. Please try again later.');
+    }
+}
