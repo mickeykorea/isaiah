@@ -1,5 +1,5 @@
 // Define API keys and endpoints
-const openai_api_proxy = "https://open-ai-proxy.glitch.me/";
+const openai_api_proxy = "https://isaiah-openai-proxy.iamyegyun.workers.dev";
 
 const museumAPIs = {
     'met': 'https://collectionapi.metmuseum.org/public/collection/v1/',
