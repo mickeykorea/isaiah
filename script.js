@@ -191,7 +191,7 @@ async function getInitialAIResponse(userInput) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            model: 'gpt-5-mini',
+            model: 'gpt-4o-mini',
             messages: [
                 {
                     role: 'system',
@@ -260,7 +260,7 @@ async function getFollowUpQuestion(userTheme, previousQuestions, previousAnswers
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            model: 'gpt-5-mini',
+            model: 'gpt-4o-mini',
             messages: [
                 {
                     role: 'system',
@@ -551,7 +551,7 @@ async function extractArtistName(contextualSentences) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-5-mini',
+                model: 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'system',
@@ -665,7 +665,7 @@ async function curateExhibition(criteria) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-5-mini',
+                model: 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'system',
@@ -712,7 +712,7 @@ async function getCuratedSelection(artworks, userTheme) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-5-mini',
+                model: 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'system',
@@ -916,7 +916,7 @@ async function generateWallText(visualDesc, contextualDesc, title) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-5-mini',
+                model: 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'system',
