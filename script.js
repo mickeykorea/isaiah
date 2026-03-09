@@ -222,6 +222,9 @@ async function getInitialAIResponse(userInput) {
             ]
         }),
     });
+    if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+    }
     const data = await response.json();
     //console.log('Raw API response:', data);
     try {
@@ -324,6 +327,9 @@ async function getFollowUpQuestion(userTheme, previousQuestions, previousAnswers
         })
     });
 
+    if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+    }
     const data = await response.json();
     let content = data.choices[0].message.content;
     content = content.replace(/```json\n?|\n?```/g, '').trim();
@@ -568,6 +574,9 @@ async function extractArtistName(contextualSentences) {
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
         const data = await response.json();
         return data.choices[0].message.content.trim() || 'Unknown Artist';
     } catch (error) {
@@ -680,6 +689,9 @@ async function curateExhibition(criteria) {
             })
         });
 
+        if (!curationResponse.ok) {
+            throw new Error(`API request failed with status ${curationResponse.status}`);
+        }
         const data = await curationResponse.json();
         const searchTerms = JSON.parse(data.choices[0].message.content);
         console.log('MET API search terms:', searchTerms);
@@ -748,6 +760,9 @@ async function getCuratedSelection(artworks, userTheme) {
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
         const data = await response.json();
         let content = data.choices[0].message.content;
 
@@ -1229,6 +1244,8 @@ function handleAPIError(error) {
     console.error('API Error:', error);
     if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
         showAlert('The AI service is currently under construction. Please try again later.');
+    } else if (error.message.includes('403')) {
+        showAlert('Unable to reach the AI service. If you\'re on a corporate or school network, the connection may be blocked by a firewall.');
     } else {
         showAlert('An unexpected error occurred. Please try again later.');
     }
