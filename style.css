@@ -351,6 +351,7 @@ h3 {
 /* Gallery: a scroll-snap track. Swipe on touch, arrows/dots/keys elsewhere. */
 #artworks-display {
     position: relative;
+    max-width: 800px;
     margin: 30px auto 0;
 }
 
@@ -417,17 +418,11 @@ h3 {
     stroke: #ECECF1;
 }
 
-.gallery-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin-top: 18px;
-}
-
 .gallery-indicators {
     display: flex;
+    justify-content: center;
     gap: 10px;
+    margin-top: 18px;
 }
 
 .indicator {
@@ -443,12 +438,6 @@ h3 {
 .indicator.active {
     background: var(--accent);
     transform: scale(1.25);
-}
-
-.gallery-counter {
-    font-size: 0.85rem;
-    color: #A0A2B0;
-    font-variant-numeric: tabular-nums;
 }
 
 .artwork img {
@@ -530,13 +519,6 @@ h3 {
     justify-content: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    transition: transform 200ms var(--ease-out), opacity 200ms var(--ease-out), background-color 150ms ease;
-}
-
-.help-button.is-hidden {
-    transform: translateY(calc(100% + 40px));
-    opacity: 0;
-    pointer-events: none;
 }
 
 /* Help popup styles */
@@ -591,8 +573,18 @@ h3 {
 
 /* Mobile */
 @media (max-width: 600px) {
+    .container {
+        padding: 12px;
+    }
+
     .input-section {
         margin-top: 8vh;
+    }
+
+    /* The help button is for first-time orientation; once a session starts it only gets in the way */
+    .session-started .help-button,
+    .session-started .help-popup {
+        display: none;
     }
 
     #isaiah-logo {
@@ -640,19 +632,18 @@ h3 {
         padding: 16px;
     }
 
-    /* Swipe: cards peek at the edge, arrows go away */
+    /* Swipe between full-width cards; dots show position, arrows go away */
     #artworks-display {
         margin: 20px -12px 0;
     }
 
     .gallery-track {
-        gap: 10px;
-        padding: 0 12px 4px;
-        scroll-padding: 0 12px;
+        gap: 12px;
+        padding: 0 0 4px;
     }
 
     .artwork {
-        flex-basis: 88%;
+        flex-basis: 100%;
         border-radius: 12px;
     }
 

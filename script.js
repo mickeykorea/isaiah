@@ -375,15 +375,11 @@ function displayExhibition({ title, explanation, picks }) {
         </div>
         <button class="gallery-nav prev" aria-label="Previous artwork"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="gallery-nav next" aria-label="Next artwork"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="gallery-footer">
-            <div class="gallery-indicators">${picks.map((_, i) => `<button class="indicator" aria-label="Artwork ${i + 1} of ${picks.length}"></button>`).join('')}</div>
-            <span class="gallery-counter" aria-live="polite">1 / ${picks.length}</span>
-        </div>`;
+        <div class="gallery-indicators">${picks.map((_, i) => `<button class="indicator" aria-label="Artwork ${i + 1} of ${picks.length}"></button>`).join('')}</div>`;
 
     const track = display.querySelector('.gallery-track');
     const cards = [...track.querySelectorAll('.artwork')];
     const dots = [...display.querySelectorAll('.indicator')];
-    const counter = display.querySelector('.gallery-counter');
     let current = 0;
 
     // Scroll the track so card i sits centred. Native scroll-snap handles swipes;
@@ -404,7 +400,6 @@ function displayExhibition({ title, explanation, picks }) {
         if (best === current) return;
         current = best;
         dots.forEach((d, i) => d.classList.toggle('active', i === current));
-        counter.textContent = `${current + 1} / ${cards.length}`;
     };
     dots[0].classList.add('active');
     track.addEventListener('scroll', sync, { passive: true });
@@ -491,6 +486,7 @@ async function handleSubmit() {
     if (!vectors) { showAlert('Please wait for the art data to finish loading.'); return; }
 
     themeInput.value = '';
+    document.body.classList.add('session-started');
     document.getElementById('chat-interface').style.display = 'block';
     document.querySelector('.input-section').classList.add('chat-started');
     console.log('Starting conversation with theme:', theme);
@@ -513,18 +509,5 @@ document.addEventListener('click', (e) => {
     if (!helpPopup.contains(e.target) && !helpButton.contains(e.target)) setHelp(false);
 });
 
-// Floating button convention: get out of the way while typing or scrolling down, return on scroll up.
-const hideHelp = (hide) => {
-    helpButton.classList.toggle('is-hidden', hide);
-    if (hide) setHelp(false);
-};
-let lastY = window.scrollY;
-window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (Math.abs(y - lastY) > 4) hideHelp(y > lastY && y > 80);
-    lastY = y;
-}, { passive: true });
-document.addEventListener('focusin', (e) => { if (e.target.matches('input')) hideHelp(true); });
-document.addEventListener('focusout', (e) => { if (e.target.matches('input')) hideHelp(false); });
 
 loadMuseumData();
