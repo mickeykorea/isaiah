@@ -494,6 +494,12 @@ async function handleSubmit() {
 }
 
 document.querySelector('.submit-button').addEventListener('click', handleSubmit);
+document.querySelectorAll('.suggestion').forEach((b) => {
+    b.addEventListener('click', () => {
+        document.getElementById('theme-input').value = b.textContent;
+        handleSubmit();
+    });
+});
 document.getElementById('theme-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSubmit(); });
 
 const helpButton = document.querySelector('.help-button');

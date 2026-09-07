@@ -99,13 +99,55 @@ h3 {
     /* font-family: "Waiting for the Sunrise", serif; */
 }
 
+.composer {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    order: 2; /* below the input on desktop; DOM order (above) on phones */
+}
+
+.suggestion {
+    background: #2a2a2a;
+    color: #C9CAD3;
+    border: 1px solid #3a3a3a;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease, transform 160ms var(--ease-out);
+}
+
+.suggestion:active {
+    transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .suggestion:hover {
+        background: #3a3a3a;
+        color: #ECECF1;
+    }
+}
+
+.session-started .suggestions {
+    display: none;
+}
+
 #input-chat-container {
     display: flex;
     align-items: center;
     width: 100%;
     justify-content: center;
     max-width: 800px;
-    margin-top: 12px;
 }
 
 #theme-input {
@@ -573,12 +615,25 @@ h3 {
 
 /* Mobile */
 @media (max-width: 600px) {
+    /* Landing: headline centred in the viewport, composer pinned to the bottom */
     .container {
         padding: 12px;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-bottom: 260px;
+    }
+
+    .session-started .container {
+        display: block;
+        min-height: 0;
+        padding-bottom: 12px;
     }
 
     .input-section {
-        margin-top: 8vh;
+        margin-top: 0;
     }
 
     /* The help button is for first-time orientation; once a session starts it only gets in the way */
@@ -589,8 +644,47 @@ h3 {
 
     #isaiah-logo {
         width: 45%;
-        margin-top: 10px;
+        margin-top: 0;
         margin-bottom: 10px;
+    }
+
+    .composer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 5;
+        gap: 6px;
+        padding: 8px 12px calc(12px + env(safe-area-inset-bottom));
+        background: #212121;
+    }
+
+    .session-started .composer {
+        position: static;
+        padding: 0;
+    }
+
+    .suggestions {
+        order: 0;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 0;
+        margin-bottom: 4px;
+    }
+
+    .suggestion {
+        text-align: left;
+        background: none;
+        border: none;
+        border-radius: 0;
+        border-top: 1px solid #2f2f2f;
+        padding: 12px 6px;
+        font-size: 1rem;
+    }
+
+    .suggestion:first-child {
+        border-top: none;
     }
 
     #theme-input {
@@ -656,18 +750,23 @@ h3 {
         height: 10px;
     }
 
+    /* Help lives in the top corner on phones, clear of the composer */
     .help-button {
-        right: 16px;
-        bottom: 16px;
-        height: 44px;
-        width: 44px;
+        top: 12px;
+        right: 12px;
+        bottom: auto;
+        height: 40px;
+        width: 40px;
+        box-shadow: none;
     }
 
     .help-popup {
+        top: 60px;
+        bottom: auto;
         right: 12px;
-        bottom: 70px;
         width: calc(100% - 24px);
         max-width: 320px;
+        transform-origin: top right;
     }
 }
 
