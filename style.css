@@ -143,24 +143,26 @@ h3 {
 }
 
 #input-chat-container {
-    display: flex;
-    align-items: center;
+    position: relative;
     width: 100%;
-    justify-content: center;
     max-width: 800px;
 }
 
 #theme-input {
-    flex: 1;
-    width: 80%;
-    max-width: 800px;
-    padding: 12px 15px;
+    width: 100%;
+    padding: 14px 56px 14px 18px; /* room for the send button inside */
     border: 1px solid #2f2f2f;
     border-radius: 50px;
     background-color: #2f2f2f;
     color: #ECECF1;
     font-size: 1em;
-    margin-right: 10px;
+}
+
+#input-chat-container .submit-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    translate: 0 -50%;
 }
 
 #theme-input:focus {
@@ -645,7 +647,12 @@ h3 {
     #isaiah-logo {
         width: 45%;
         margin-top: 0;
-        margin-bottom: 10px;
+        margin-bottom: 32px;
+    }
+
+    .input-section label {
+        width: 100%;
+        padding: 0 8px;
     }
 
     .composer {
@@ -685,11 +692,6 @@ h3 {
 
     .suggestion:first-child {
         border-top: none;
-    }
-
-    #theme-input {
-        width: auto;
-        min-width: 0;
     }
 
     /* Let the page scroll instead of a nested scroll region */
