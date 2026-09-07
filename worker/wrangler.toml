@@ -6,4 +6,4 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "isaiah-logs"
-database_id = "PASTE_ID_HERE"
+database_id = "8bcf6e10-b384-4fbf-b8e5-35087dee2905"
