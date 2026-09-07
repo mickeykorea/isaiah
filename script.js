@@ -362,8 +362,8 @@ function displayExhibition({ title, explanation, picks }) {
 
     const display = document.getElementById('artworks-display');
     display.innerHTML = `
-        <button class="gallery-nav prev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="gallery-nav next"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="gallery-nav prev" aria-label="Previous artwork"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="gallery-nav next" aria-label="Next artwork"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="gallery-indicators"></div>`;
     const indicators = display.querySelector('.gallery-indicators');
 
@@ -379,8 +379,9 @@ function displayExhibition({ title, explanation, picks }) {
             <div class="curator-notes"><h4>Curatorial Details</h4><p>${esc(a.curatorialNotes)}</p></div>`;
         display.appendChild(el);
 
-        const dot = document.createElement('div');
+        const dot = document.createElement('button');
         dot.className = 'indicator' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `Artwork ${i + 1} of ${picks.length}`);
         dot.onclick = () => showArtwork(i);
         indicators.appendChild(dot);
     });
