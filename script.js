@@ -362,46 +362,65 @@ function displayExhibition({ title, explanation, picks }) {
 
     const display = document.getElementById('artworks-display');
     display.innerHTML = `
+        <div class="gallery-track" tabindex="0" aria-label="Exhibition artworks">
+            ${picks.map(a => `
+            <article class="artwork">
+                <h3>${esc(a.title)}</h3>
+                ${a.artist ? `<p>${esc(a.artist)}</p>` : ''}
+                ${a.year ? `<p>${esc(a.year)}</p>` : ''}
+                <img src="${esc(a.imageUrl)}" alt="${esc(a.title)}" loading="lazy">
+                <p class="wall-text">${esc(a.wallText)}</p>
+                <div class="curator-notes"><h4>Curatorial Details</h4><p>${esc(a.curatorialNotes)}</p></div>
+            </article>`).join('')}
+        </div>
         <button class="gallery-nav prev" aria-label="Previous artwork"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="gallery-nav next" aria-label="Next artwork"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="gallery-indicators"></div>`;
-    const indicators = display.querySelector('.gallery-indicators');
+        <div class="gallery-footer">
+            <div class="gallery-indicators">${picks.map((_, i) => `<button class="indicator" aria-label="Artwork ${i + 1} of ${picks.length}"></button>`).join('')}</div>
+            <span class="gallery-counter" aria-live="polite">1 / ${picks.length}</span>
+        </div>`;
 
-    picks.forEach((a, i) => {
-        const el = document.createElement('div');
-        el.className = 'artwork' + (i === 0 ? ' active' : '');
-        el.innerHTML = `
-            <h3>${esc(a.title)}</h3>
-            ${a.artist ? `<p>${esc(a.artist)}</p>` : ''}
-            ${a.year ? `<p>${esc(a.year)}</p>` : ''}
-            <img src="${esc(a.imageUrl)}" alt="${esc(a.title)}" width="200">
-            <p class="wall-text">${esc(a.wallText)}</p>
-            <div class="curator-notes"><h4>Curatorial Details</h4><p>${esc(a.curatorialNotes)}</p></div>`;
-        display.appendChild(el);
-
-        const dot = document.createElement('button');
-        dot.className = 'indicator' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', `Artwork ${i + 1} of ${picks.length}`);
-        dot.onclick = () => showArtwork(i);
-        indicators.appendChild(dot);
-    });
-
+    const track = display.querySelector('.gallery-track');
+    const cards = [...track.querySelectorAll('.artwork')];
+    const dots = [...display.querySelectorAll('.indicator')];
+    const counter = display.querySelector('.gallery-counter');
     let current = 0;
-    const showArtwork = (i) => {
-        current = (i + picks.length) % picks.length;
-        display.querySelectorAll('.artwork').forEach((el, j) => el.classList.toggle('active', j === current));
-        display.querySelectorAll('.indicator').forEach((el, j) => el.classList.toggle('active', j === current));
+
+    // Scroll the track so card i sits centred. Native scroll-snap handles swipes;
+    // this only serves arrows, dots and keys. Keyboard jumps are instant.
+    const goTo = (i, instant = false) => {
+        const idx = (i + cards.length) % cards.length;
+        const card = cards[idx];
+        const left = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
+        track.scrollTo({ left, behavior: instant || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     };
-    display.querySelector('.gallery-nav.prev').onclick = () => showArtwork(current - 1);
-    display.querySelector('.gallery-nav.next').onclick = () => showArtwork(current + 1);
+    const sync = () => {
+        const mid = track.scrollLeft + track.clientWidth / 2;
+        let best = 0, bestDist = Infinity;
+        cards.forEach((c, i) => {
+            const d = Math.abs(c.offsetLeft + c.clientWidth / 2 - mid);
+            if (d < bestDist) { bestDist = d; best = i; }
+        });
+        if (best === current) return;
+        current = best;
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+        counter.textContent = `${current + 1} / ${cards.length}`;
+    };
+    dots[0].classList.add('active');
+    track.addEventListener('scroll', sync, { passive: true });
+    display.querySelector('.gallery-nav.prev').onclick = () => goTo(current - 1);
+    display.querySelector('.gallery-nav.next').onclick = () => goTo(current + 1);
+    dots.forEach((d, i) => { d.onclick = () => goTo(i); });
+    galleryKeys = (key) => { if (key === 'ArrowLeft') goTo(current - 1, true); if (key === 'ArrowRight') goTo(current + 1, true); };
 
     setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 10);
 }
 
-// Registered once; drives whichever gallery is currently rendered.
+// Registered once; the current gallery swaps in its own handler.
+let galleryKeys = () => {};
 document.addEventListener('keydown', (e) => {
-    const sel = e.key === 'ArrowLeft' ? '.gallery-nav.prev' : e.key === 'ArrowRight' ? '.gallery-nav.next' : null;
-    if (sel) document.querySelector(sel)?.click();
+    if (e.target.tagName === 'INPUT') return;
+    galleryKeys(e.key);
 });
 
 const AVATAR_SVG = `
@@ -493,5 +512,19 @@ helpButton.addEventListener('click', () => setHelp(!helpPopup.classList.contains
 document.addEventListener('click', (e) => {
     if (!helpPopup.contains(e.target) && !helpButton.contains(e.target)) setHelp(false);
 });
+
+// Floating button convention: get out of the way while typing or scrolling down, return on scroll up.
+const hideHelp = (hide) => {
+    helpButton.classList.toggle('is-hidden', hide);
+    if (hide) setHelp(false);
+};
+let lastY = window.scrollY;
+window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (Math.abs(y - lastY) > 4) hideHelp(y > lastY && y > 80);
+    lastY = y;
+}, { passive: true });
+document.addEventListener('focusin', (e) => { if (e.target.matches('input')) hideHelp(true); });
+document.addEventListener('focusout', (e) => { if (e.target.matches('input')) hideHelp(false); });
 
 loadMuseumData();

@@ -348,32 +348,44 @@ h3 {
     line-height: 1.8;
 }
 
-/* Exhibition section styles */
+/* Gallery: a scroll-snap track. Swipe on touch, arrows/dots/keys elsewhere. */
 #artworks-display {
     position: relative;
-    width: 100%;
-    margin: 30px auto;
-    margin-bottom: 50px;
-    min-height: 400px;
+    margin: 30px auto 0;
+}
+
+.gallery-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+}
+
+.gallery-track::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery-track:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 8px;
 }
 
 .artwork {
-    display: none;
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
     background-color: #343541;
     padding: 20px;
     border-radius: 8px;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    animation: fadeEffect 150ms var(--ease-out);
     text-align: center;
 }
 
-.artwork.active {
-    display: block;
-}
-
-/* Navigation buttons */
+/* Navigation arrows (pointer devices) */
 .gallery-nav {
     position: absolute;
     top: 200px;
@@ -405,18 +417,17 @@ h3 {
     stroke: #ECECF1;
 }
 
-/* Gallery indicators */
+.gallery-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 18px;
+}
+
 .gallery-indicators {
     display: flex;
-    justify-content: center;
     gap: 10px;
-    margin-top: 20px;
-    position: absolute;
-    bottom: -40px;
-    /* Position below the artwork */
-    left: 0;
-    right: 0;
-    width: 100%;
 }
 
 .indicator {
@@ -430,17 +441,14 @@ h3 {
 }
 
 .indicator.active {
-    background: #6281BB;
+    background: var(--accent);
+    transform: scale(1.25);
 }
 
-@keyframes fadeEffect {
-    from {
-        opacity: 0.6;
-    }
-
-    to {
-        opacity: 1;
-    }
+.gallery-counter {
+    font-size: 0.85rem;
+    color: #A0A2B0;
+    font-variant-numeric: tabular-nums;
 }
 
 .artwork img {
@@ -522,6 +530,13 @@ h3 {
     justify-content: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+    transition: transform 200ms var(--ease-out), opacity 200ms var(--ease-out), background-color 150ms ease;
+}
+
+.help-button.is-hidden {
+    transform: translateY(calc(100% + 40px));
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* Help popup styles */
@@ -625,23 +640,24 @@ h3 {
         padding: 16px;
     }
 
+    /* Swipe: cards peek at the edge, arrows go away */
     #artworks-display {
-        margin: 20px auto 44px;
+        margin: 20px -12px 0;
     }
 
-    /* Keep the arrows on screen, tucked into the card corners */
+    .gallery-track {
+        gap: 10px;
+        padding: 0 12px 4px;
+        scroll-padding: 0 12px;
+    }
+
+    .artwork {
+        flex-basis: 88%;
+        border-radius: 12px;
+    }
+
     .gallery-nav {
-        top: 150px;
-        width: 36px;
-        height: 36px;
-    }
-
-    .gallery-nav.prev { left: -6px; }
-    .gallery-nav.next { right: -6px; }
-
-    .gallery-nav svg {
-        width: 20px;
-        height: 20px;
+        display: none;
     }
 
     .indicator {
