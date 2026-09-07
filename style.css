@@ -634,7 +634,7 @@ h3 {
 
     /* Swipe between full-width cards; dots show position, arrows go away */
     #artworks-display {
-        margin: 20px -12px 0;
+        margin: 20px auto 0;
     }
 
     .gallery-track {
