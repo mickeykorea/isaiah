@@ -1,3 +1,9 @@
 name = "isaiah-openai-proxy"
 main = "index.js"
 compatibility_date = "2024-01-01"
+
+# Session log. Create once with `wrangler d1 create isaiah-logs` and paste the id it prints.
+[[d1_databases]]
+binding = "DB"
+database_name = "isaiah-logs"
+database_id = "PASTE_ID_HERE"

@@ -25,16 +25,17 @@ export default {
     const headers = corsHeaders(request);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     if (request.method !== "POST") return new Response("Method not allowed", { status: 405, headers });
-    if (new URL(request.url).pathname !== "/v1/chat/completions") {
-      return new Response("Not found", { status: 404, headers });
-    }
-
+    const path = new URL(request.url).pathname;
     let body;
     try {
       body = await request.json();
     } catch {
       return new Response("Invalid JSON", { status: 400, headers });
     }
+
+    if (path === "/log") return logSession(body, env, headers);
+    if (path !== "/v1/chat/completions") return new Response("Not found", { status: 404, headers });
+
     body.model = MODEL;
     body.max_completion_tokens = Math.min(body.max_completion_tokens ?? MAX_OUTPUT_TOKENS, MAX_OUTPUT_TOKENS);
 
@@ -53,3 +54,24 @@ export default {
     });
   },
 };
+
+// Fire-and-forget record of each finished exhibition. Table is created on first write,
+// so there is no migration step. Read with:
+//   wrangler d1 execute isaiah-logs --remote --command "SELECT * FROM sessions ORDER BY id DESC LIMIT 20"
+async function logSession(body, env, headers) {
+  if (!env.DB) return new Response("no db", { status: 501, headers });
+  const str = (v, max) => String(v ?? "").slice(0, max);
+  try {
+    await env.DB.batch([
+      env.DB.prepare(`CREATE TABLE IF NOT EXISTS sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        theme TEXT, interview TEXT, title TEXT, picks TEXT)`),
+      env.DB.prepare("INSERT INTO sessions (theme, interview, title, picks) VALUES (?, ?, ?, ?)")
+        .bind(str(body.theme, 500), str(JSON.stringify(body.qa ?? []), 4000), str(body.title, 300), str(JSON.stringify(body.picks ?? []), 2000)),
+    ]);
+    return new Response("ok", { status: 200, headers });
+  } catch (e) {
+    return new Response(String(e), { status: 500, headers });
+  }
+}

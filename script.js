@@ -334,6 +334,14 @@ async function curateExhibition(theme, qa) {
     const candidates = await findRelevant(query);
     const exhibition = await getCuratedSelection(candidates, theme, brief);
     displayExhibition(exhibition);
+
+    // Anonymous usage log; never blocks or surfaces errors.
+    fetch(`${OPENAI_PROXY}/log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({ theme, qa, title: exhibition.title, picks: exhibition.picks.map(p => p.title) }),
+    }).catch(() => {});
 }
 
 // ---------------------------------------------------------------------------
