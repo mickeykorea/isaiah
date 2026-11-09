@@ -259,7 +259,9 @@ async function initiateConversation(theme) {
     try {
         const qa = await runInterview(theme);
         appendMessage(chatDiv, "I'll curate an exhibition based on your preferences and curation criteria such as Relevance, Narrative, Diversity, and Complementarity.", 'ai');
+        showTyping(chatDiv);
         await curateExhibition(theme, qa);
+        hideTyping(chatDiv);
     } catch (error) {
         console.error('Error in conversation:', error);
         handleAPIError(error);
@@ -273,8 +275,8 @@ async function runInterview(theme) {
     const qa = [];
 
     const say = async (r) => {
-        if (r.interpretation) { appendMessage(chatDiv, r.interpretation, 'ai'); await delay(1800); }
-        if (r.insight) { appendMessage(chatDiv, r.insight, 'ai'); await delay(1800); }
+        if (r.interpretation) { appendMessage(chatDiv, r.interpretation, 'ai'); showTyping(chatDiv); await delay(1800); }
+        if (r.insight) { appendMessage(chatDiv, r.insight, 'ai'); showTyping(chatDiv); await delay(1800); }
     };
     const ask = async (question) => {
         appendMessage(chatDiv, question, 'ai');
@@ -284,11 +286,13 @@ async function runInterview(theme) {
         qa.push({ question, answer });
     };
 
+    showTyping(chatDiv);
     const first = await getInitialResponse(theme);
     await say(first);
     if (first.question) await ask(first.question);
 
     while (qa.length < MAX_QUESTIONS) {
+        showTyping(chatDiv);
         const next = await getFollowUp(theme, qa);
         await say(next);
         if (next.status === 'COMPLETE') break;
@@ -301,6 +305,7 @@ async function runInterview(theme) {
 function getUserInput() {
     return new Promise((resolve) => {
         const chatDiv = document.getElementById('chat-interface');
+        hideTyping(chatDiv);
         const container = document.createElement('div');
         container.className = 'input-container';
         container.innerHTML = `
@@ -382,6 +387,13 @@ function displayExhibition({ title, explanation, picks }) {
     const dots = [...display.querySelectorAll('.indicator')];
     let current = 0;
 
+    // Fade each painting in once it has loaded (errors too, so the alt text shows).
+    for (const img of track.querySelectorAll('img')) {
+        const show = () => img.classList.add('loaded');
+        if (img.complete) show();
+        else { img.addEventListener('load', show, { once: true }); img.addEventListener('error', show, { once: true }); }
+    }
+
     // Scroll the track so card i sits centred. Native scroll-snap handles swipes;
     // this only serves arrows, dots and keys. Keyboard jumps are instant.
     const goTo = (i, instant = false) => {
@@ -441,7 +453,24 @@ const AVATAR_SVG = `
     </svg>
 `;
 
+// Three pulsing dots in an AI bubble; the next message or input replaces it.
+function showTyping(chatDiv) {
+    hideTyping(chatDiv);
+    const div = document.createElement('div');
+    div.className = 'message ai typing';
+    div.setAttribute('role', 'status');
+    div.setAttribute('aria-label', 'Isaiah is thinking');
+    div.innerHTML = `<div class="avatar">${AVATAR_SVG}</div><div class="message-content"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
+    chatDiv.appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideTyping(chatDiv) {
+    chatDiv.querySelector('.typing')?.remove();
+}
+
 function appendMessage(chatDiv, message, sender) {
+    hideTyping(chatDiv);
     const div = document.createElement('div');
     div.className = `message ${sender}`;
     div.innerHTML = `<div class="avatar">${AVATAR_SVG}</div><div class="message-content"></div>`;

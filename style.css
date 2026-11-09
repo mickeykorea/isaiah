@@ -3,6 +3,7 @@
 /* Global styles */
 :root {
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
     --accent: #6281BB;
     --accent-strong: #3f5479;
 }
@@ -20,6 +21,12 @@ body {
     font-optical-sizing: auto;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+}
+
+/* Shared entrance: fade up a short distance. Used for one-off reveals only. */
+@keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 input, button {
@@ -82,7 +89,7 @@ h3 {
 
 .input-section.chat-started {
     margin-top: 30px;
-    transition: margin-top 0.5s ease;
+    transition: margin-top 500ms var(--ease-in-out);
 }
 
 .input-section input {
@@ -142,6 +149,18 @@ h3 {
     display: none;
 }
 
+/* Landing entrance: input first, then the example chips one by one */
+#input-chat-container,
+.suggestion {
+    animation: rise 400ms var(--ease-out) backwards;
+}
+
+#input-chat-container { animation-delay: 100ms; }
+.suggestion:nth-child(1) { animation-delay: 180ms; }
+.suggestion:nth-child(2) { animation-delay: 230ms; }
+.suggestion:nth-child(3) { animation-delay: 280ms; }
+.suggestion:nth-child(4) { animation-delay: 330ms; }
+
 #input-chat-container {
     position: relative;
     width: 100%;
@@ -187,6 +206,7 @@ h3 {
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    animation: rise 400ms var(--ease-out) backwards;
 }
 
 /* Custom scrollbar styling */
@@ -282,6 +302,34 @@ h3 {
     display: none;
 }
 
+/* Typing indicator while Isaiah waits on the model (script.js showTyping) */
+.typing .message-content {
+    display: flex;
+    gap: 5px;
+    padding: 16px 18px;
+}
+
+.typing .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #C9CAD3;
+    animation: typing 1.2s var(--ease-in-out) infinite;
+}
+
+.typing .dot:nth-child(2) { animation-delay: 150ms; }
+.typing .dot:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes typing {
+    0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-3px); }
+}
+
+@keyframes typingFade {
+    0%, 60%, 100% { opacity: 0.35; }
+    30% { opacity: 1; }
+}
+
 .ai .avatar {
     background-color: #6281BB;
 }
@@ -370,6 +418,15 @@ h3 {
     background-color: #404152;
     border-radius: 8px;
 }
+
+/* Reveal: title, curator's note, then the gallery, when the section is shown */
+#exhibition-section > * {
+    animation: rise 600ms var(--ease-out) backwards;
+}
+
+#exhibition-section > :nth-child(1) { animation-delay: 100ms; }
+#exhibition-section > :nth-child(2) { animation-delay: 220ms; }
+#exhibition-section > :nth-child(3) { animation-delay: 340ms; }
 
 #exhibition-title {
     color: #ECECF1;
@@ -494,6 +551,12 @@ h3 {
     /* current doesn't work bc of object-fit */
     margin: 10px 0;
     object-fit: contain;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+}
+
+.artwork img.loaded {
+    opacity: 1;
 }
 
 .artwork h3 {
@@ -783,6 +846,19 @@ h3 {
         animation-duration: 1ms;
     }
 
+    /* Entrances become plain fades */
+    #input-chat-container,
+    .suggestion,
+    #chat-interface,
+    #exhibition-section > * {
+        animation-name: fadeIn;
+        animation-duration: 200ms;
+    }
+
+    .typing .dot {
+        animation-name: typingFade;
+    }
+
     .help-popup,
     .submit-button,
     .gallery-nav,
@@ -814,6 +890,11 @@ h3 {
 
 .cursor-static {
     opacity: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes blink {
