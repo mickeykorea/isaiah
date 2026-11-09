@@ -413,6 +413,7 @@ h3 {
 
 /* Exhibition section styles */
 #exhibition-section {
+    container-type: inline-size; /* lets the gallery arrows find the panel's edge (cqw) */
     margin-top: 50px;
     padding: 30px;
     background-color: #404152;
@@ -505,13 +506,14 @@ h3 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
-/* Sit on top of the artwork, clear of the card's 20px padding edge */
+/* Centre each arrow on the exhibition panel's outer edge. 100% is the gallery's
+   width, 100cqw the panel's content width, 30px its padding, 20px half the button. */
 .gallery-nav.prev {
-    left: 32px;
+    left: calc((100% - 100cqw) / 2 - 30px - 20px);
 }
 
 .gallery-nav.next {
-    right: 32px;
+    right: calc((100% - 100cqw) / 2 - 30px - 20px);
 }
 
 .gallery-nav svg {
