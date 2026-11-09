@@ -445,14 +445,16 @@ h3 {
     justify-content: center;
     cursor: pointer;
     z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
+/* Sit on top of the artwork, clear of the card's 20px padding edge */
 .gallery-nav.prev {
-    left: -50px;
+    left: 32px;
 }
 
 .gallery-nav.next {
-    right: -50px;
+    right: 32px;
 }
 
 .gallery-nav svg {
